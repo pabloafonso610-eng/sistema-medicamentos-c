@@ -2,12 +2,14 @@
 #include <stdlib.h>
 #include <string.h>
 
+// PROJETO DE PROGRAMAÇÃO EM C - TRABALHO - PABLO MAIA 
+
 typedef struct {
 
-    char nome[50];
-    char quantidade[50];
-    char dias[100];
-    char horarios[100];
+char nome[50];
+char quantidade[50];
+char dias[100];
+char horarios[100];
 
 } Medicamento;
 
@@ -21,36 +23,39 @@ int main() {
     int escolha;
     int i;
 
-    char diaBusca[20];
+    char horarioBusca[20];
 
     FILE *arquivo;
 
-    while(opcao != 4) {
+    while(opcao != 5) {
 
-        printf("\n===== SISTEMA =====\n");
-        printf("1 - Cadastrar medicamento\n");
+        printf("\nSISTEMA DE MEDICAMENTOS\n");
+         printf("\nEscolha uma opcao: \n");
+          printf("1 - Cadastrar medicamento\n");
         printf("2 - Listar medicamentos\n");
-        printf("3 - Buscar por dia\n");
-        printf("4 - Sair\n");
+        printf("3 - Buscar por horario\n");
+        printf("4 - Imprimir lista de medicamentos\n");
+        printf("5 - Sair\n");
+        printf("Digite aqui:");
 
-        printf("Escolha uma opcao: ");
-        scanf("%d", &opcao);
-
-        getchar();
+        if(scanf("%d", &opcao) != 1) {
+            opcao = -1;
+        }
+        while(getchar() != '\n');
 
         switch(opcao) {
 
             case 1:
 
-                printf("\n=== CADASTRAR MEDICAMENTO ===\n");
+                printf("\nCADASTRAR MEDICAMENTO\n");
 
                 printf("Nome do medicamento: ");
-                fgets(remedio[total].nome, 50, stdin);
+                fgets(remedio[total].nome, 100, stdin);
                 
                 remedio[total].nome[strcspn(remedio[total].nome, "\n")] = 0;
 
                 printf("Quantidade: ");
-                fgets(remedio[total].quantidade, 50, stdin);
+                fgets(remedio[total].quantidade, 100, stdin);
                 
                 remedio[total].quantidade[strcspn(remedio[total].quantidade, "\n")] = 0;
 
@@ -72,7 +77,6 @@ int main() {
                     fprintf(arquivo, "Quantidade: %s\n", remedio[total].quantidade);
                     fprintf(arquivo, "Dias: %s\n", remedio[total].dias);
                     fprintf(arquivo, "Horarios: %s\n", remedio[total].horarios);
-                    fprintf(arquivo, "--------------------------\n");
 
                     fclose(arquivo);
 
@@ -92,7 +96,7 @@ int main() {
 
                 } else {
 
-                    printf("\n=== LISTA DE MEDICAMENTOS ===\n");
+                    printf("\nLISTA DE MEDICAMENTOS\n");
 
                     for(i = 0; i < total; i++) {
 
@@ -103,13 +107,13 @@ int main() {
                     printf("\nSelecione o medicamento: ");
                     scanf("%d", &escolha);
 
-                    getchar();
+                    while(getchar() != '\n');
 
                     escolha--;
 
                     if(escolha >= 0 && escolha < total) {
 
-                        printf("\n=== INFORMACOES ===\n");
+                        printf("\nINFORMACOES\n");
 
                         printf("Medicamento: %s\n", remedio[escolha].nome);
                         printf("Quantidade: %s\n", remedio[escolha].quantidade);
@@ -126,28 +130,65 @@ int main() {
 
                 break;
 
-            case 3:
+           case 3:
 
-                printf("\nDigite o dia da semana: ");
-                fgets(diaBusca, 20, stdin);
+                if(total == 0) {
 
-                diaBusca[strcspn(diaBusca, "\n")] = 0;
+                    printf("\nNenhum medicamento cadastrado.\n");
 
-                printf("\n=== MEDICAMENTOS ENCONTRADOS ===\n");
+                } else {
 
-                for(i = 0; i < total; i++) {
+                    printf("\nDigite o horario: ");
+                    fgets(horarioBusca, 20, stdin);
 
-                    if(strstr(remedio[i].dias, diaBusca) != NULL) {
+                    horarioBusca[strcspn(horarioBusca, "\n")] = 0;
 
-                        printf("%s\n", remedio[i].nome);
+                    printf("\nMEDICAMENTOS ENCONTRADOS\n");
+
+                    for(i = 0; i < total; i++) {
+
+                        if(strstr(remedio[i].horarios, horarioBusca) != NULL) {
+
+                            printf("%s\n", remedio[i].nome);
+
+                        }
 
                     }
 
                 }
 
                 break;
-
+                
             case 4:
+
+                arquivo = fopen("relatorio.txt", "w");
+
+                if(arquivo != NULL) {
+
+                    fprintf(arquivo, "LISTA DE MEDICAMENTOS\n\n");
+
+                    for(i = 0; i < total; i++) {
+
+                        fprintf(arquivo, "Medicamento: %s\n", remedio[i].nome);
+                        fprintf(arquivo, "Quantidade: %s\n", remedio[i].quantidade);
+                        fprintf(arquivo, "Dias: %s\n", remedio[i].dias);
+                        fprintf(arquivo, "Horarios: %s\n\n", remedio[i].horarios);
+
+                    }
+
+                    fclose(arquivo);
+
+                    system("notepad relatorio.txt");
+
+                } else {
+
+                    printf("\nErro ao gerar relatorio.\n");
+
+                }
+
+                break;
+
+            case 5:
 
                 printf("\nSaindo do sistema...\n");
 
